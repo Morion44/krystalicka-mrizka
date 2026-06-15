@@ -1,0 +1,83 @@
+---
+// ============================================================
+// StrukturovanaData.astro
+// JSON-LD strukturovaná data podle schema.org.
+//
+// ★ DOPLŇ ÚDAJE PRO NOVÝ WEB ★
+// - název značky, popis, klíčová slova
+// - jméno autora, jeho expertize
+// - služby s vlastním popisem
+//
+// Vkládá se do <head> hlavní stránky.
+// ============================================================
+
+const data = {
+	"@context": "https://schema.org",
+	"@graph": [
+		// 1. Značka jako podnik
+		{
+			"@type": ["ProfessionalService", "LocalBusiness"],
+			"@id": "https://nova-domena.cz/#business",
+			"name": "Název značky",
+			"alternateName": "Jméno autora — Název značky",
+			"description": "Krátký popis (max 200 znaků) s klíčovými slovy pro cílovou skupinu.",
+			"url": "https://nova-domena.cz",
+			"telephone": "+420000000000",
+			"email": "info@nova-domena.cz",
+			"image": "https://nova-domena.cz/og-image.png",
+			"logo": "https://nova-domena.cz/favicon.svg",
+			"address": {
+				"@type": "PostalAddress",
+				"postalCode": "110 00",
+				"addressLocality": "Praha",
+				"addressRegion": "Hlavní město Praha",
+				"addressCountry": "CZ"
+			},
+			"areaServed": [
+				{ "@type": "City", "name": "Praha" },
+				{ "@type": "Country", "name": "Česká republika" }
+			],
+			"priceRange": "0–0 Kč",
+			"founder": { "@id": "https://nova-domena.cz/#autor" },
+			"employee": { "@id": "https://nova-domena.cz/#autor" },
+			"makesOffer": [
+				{ "@id": "https://nova-domena.cz/#sluzba-1" }
+			],
+			"sameAs": []
+		},
+
+		// 2. Autor jako konkrétní osoba
+		{
+			"@type": "Person",
+			"@id": "https://nova-domena.cz/#autor",
+			"name": "Jméno Příjmení",
+			"jobTitle": "Pozice",
+			"description": "Krátký popis autora a jeho přístupu.",
+			"url": "https://nova-domena.cz/kdo-jsem",
+			"image": "https://nova-domena.cz/og-image.png",
+			"worksFor": { "@id": "https://nova-domena.cz/#business" },
+			"knowsAbout": [
+				"Expertní oblast 1",
+				"Expertní oblast 2",
+				"Expertní oblast 3"
+			],
+			"knowsLanguage": ["cs"],
+			"nationality": { "@type": "Country", "name": "Česká republika" }
+		},
+
+		// 3. Služba (zkopíruj a pozměň pro další služby)
+		{
+			"@type": "Service",
+			"@id": "https://nova-domena.cz/#sluzba-1",
+			"name": "Název služby",
+			"serviceType": "Typ služby",
+			"description": "Popis služby s klíčovými slovy.",
+			"url": "https://nova-domena.cz/sluzba-1",
+			"provider": { "@id": "https://nova-domena.cz/#business" },
+			"areaServed": { "@type": "Country", "name": "Česká republika" }
+		}
+	]
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(data)} />

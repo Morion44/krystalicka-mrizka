@@ -1,0 +1,78 @@
+/* ============================================================
+   tokeny.css — design tokens (barvy, fonty, mezery, časování)
+
+   ★ TADY MĚNÍŠ VŠE PRO NOVÝ WEB. ★
+
+   Defaultní barevná paleta je Morion Light (morion → ametyst →
+   křišťál → bílá). Pro novou identitu klienta změň hex hodnoty.
+   ============================================================ */
+
+:root {
+	/* ---------- BARVY ---------- */
+	/* Brána (nejtmavší vrstva) */
+	--barva-pozadi-brana: #000000;
+	--barva-text-brana: #E8E6EE;
+
+	/* Lila pole (dech v Bráně + přechod do Síně) */
+	--lila-tmava: #2E1734;
+	--lila-stredni: #7C5388;
+	--lila-svetla: #D7B6E0;
+	--lila-velmi-svetla: #E5CCEC;
+	--lila-bila: #EEDDF3;
+
+	/* Komnaty (Křišťál) */
+	--barva-pozadi-komnata: #EEDDF3;
+	--barva-text-komnata: #000000;
+
+	/* Bílá vrstva (datová — OP, GDPR, vzdělání) */
+	--barva-pozadi-bila: #FFFFFF;
+	--barva-text-bila: #000000;
+
+	/* ---------- TYPOGRAFIE ---------- */
+	--pismo-zakladni: 'Inter', system-ui, -apple-system, sans-serif;
+	--pismo-vaha-svetla: 300;
+	--pismo-vaha-stredni: 500;
+	--pismo-vaha-bezna: 400;
+
+	/* ---------- MEZERY ---------- */
+	--vzduch-mikro: 0.25rem;
+	--vzduch-maly: 0.5rem;
+	--vzduch-stredni: 1.5rem;
+	--vzduch-velky: 3rem;
+	--vzduch-obrovsky: 6rem;
+
+	/* ---------- ČASOVÁNÍ ANIMACÍ ---------- */
+	--cas-rychly: 0.3s;
+	--cas-stredni: 0.6s;
+	--cas-pomaly: 1.5s;
+	--cas-dlouhy: 15s;       /* lila pole rozkvět */
+
+	/* ---------- LAYOUT ---------- */
+	--sirka-text: 60ch;       /* úvodní vzkaz, vrchol */
+	--sirka-blok: 76ch;       /* obsahové bloky v Síni */
+	--sirka-komnata: 92ch;    /* širší řádky pro Komnaty (fakta) */
+}
+
+/* ============================================================
+   PERSONALIZACE PRO NOVÝ WEB
+
+   Místo Morion morion-ametyst-křišťál palety můžeš použít
+   např. zemitě hnědo-béžovou:
+
+   --lila-tmava: #3D2817;
+   --lila-stredni: #8B6F47;
+   --lila-svetla: #C9A876;
+   --lila-velmi-svetla: #E8D5B7;
+   --lila-bila: #F5EDDD;
+   --barva-pozadi-komnata: #F5EDDD;
+
+   Nebo modrozelený akvamarin:
+   --lila-tmava: #0E2A3F;
+   --lila-stredni: #2C5F7C;
+   --lila-svetla: #7AB8CC;
+   --lila-velmi-svetla: #B8DCE5;
+   --lila-bila: #E8F4F8;
+   --barva-pozadi-komnata: #E8F4F8;
+
+   Důležité: zachovej principy gradientu od TMAVÉ k SVĚTLÉ.
+   Mřížka tím dýchá. ============================================ */

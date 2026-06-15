@@ -1,0 +1,90 @@
+---
+// ============================================================
+// KomnataLayout.astro
+// Sdílený rámec pro všechny Komnaty (bílé stránky Křišťálu).
+// Drží:
+//   - hluboký lila nádech bílého pozadí (#EEDDF3)
+//   - tichý odkaz „Morion Light" vlevo nahoře — zpět na Bránu
+//   - plovoucí Dodekaedr-Menu se seznamem Komnat
+//
+// Užití v Komnatě:
+//   <KomnataLayout nadpis="Proč Morion Light">
+//     <obsah />
+//   </KomnataLayout>
+// ============================================================
+
+import '../styly/tokeny.css';
+import '../styly/globalni.css';
+import Dodekaedr from '../komponenty/Dodekaedr.astro';
+import Menu from '../komponenty/Menu.astro';
+import CookiesLista from '../komponenty/CookiesLista.astro';
+import MetaTagy from '../komponenty/MetaTagy.astro';
+
+const { nadpis, popis, ogTyp } = Astro.props;
+---
+
+<html lang="cs">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<MetaTagy nadpis={nadpis} popis={popis} ogTyp={ogTyp} />
+	</head>
+	<body class="je-komnata">
+		<header class="komnata-zahlavi">
+			<a href="/" class="komnata-zahlavi__odkaz">Morion Light</a>
+		</header>
+
+		<main class="komnata">
+			<slot />
+		</main>
+
+		<Menu />
+		<Dodekaedr />
+		<CookiesLista />
+	</body>
+</html>
+
+<style is:global>
+	/* Pozadí celého tělesa Komnaty — křišťál s lila nádechem */
+	body.je-komnata {
+		background: var(--lila-bila);
+		color: #000000;
+		min-height: 100vh;
+	}
+</style>
+
+<style>
+	.komnata-zahlavi {
+		position: fixed;
+		top: 5vh;
+		left: 5vw;
+		z-index: 5;
+	}
+
+	.komnata-zahlavi__odkaz {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.9rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #000000;
+		text-decoration: none;
+
+		transition: letter-spacing 0.3s ease-out, color 0.3s ease-out;
+	}
+
+	.komnata-zahlavi__odkaz:hover,
+	.komnata-zahlavi__odkaz:focus-visible {
+		color: var(--lila-stredni);
+		letter-spacing: 0.24em;
+		outline: none;
+	}
+
+	.komnata {
+		max-width: 92ch;                        /* širší než Síň (76ch) — fakta dýchají do stran */
+		margin: 0 auto;
+		padding: 18vh var(--vzduch-stredni) 22vh;
+	}
+</style>

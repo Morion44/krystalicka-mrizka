@@ -1,0 +1,78 @@
+/* ============================================================
+   globalni.css — reset + základ pro celý web
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+html {
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: var(--pismo-zakladni);
+}
+
+body {
+	min-height: 100vh;
+	line-height: 1.5;
+	font-family: var(--pismo-zakladni);
+	font-weight: var(--pismo-vaha-svetla);
+}
+
+img, picture, svg {
+	max-width: 100%;
+	display: block;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+button {
+	border: none;
+	background: none;
+	cursor: pointer;
+	font: inherit;
+	color: inherit;
+}
+
+/* Třída pro vizuálně skrytý text dostupný pro screen readery
+   (užitečné pro accessibility nebo SEO H1, který se nemá zobrazit) */
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
+}
+
+/* Sdílená třída pro „chci vědět více" odkazy v Síni a Komnatách */
+.prolink {
+	font-family: var(--pismo-zakladni);
+	font-weight: var(--pismo-vaha-svetla);
+	font-size: 0.95rem;
+	letter-spacing: 0.05em;
+	text-transform: uppercase;
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-color: var(--lila-stredni);
+	text-underline-offset: 0.4em;
+	transition: color var(--cas-rychly) ease-out, letter-spacing var(--cas-rychly) ease-out;
+}
+
+.prolink:hover,
+.prolink:focus-visible {
+	color: var(--lila-stredni);
+	letter-spacing: 0.08em;
+	outline: none;
+}

@@ -1,0 +1,56 @@
+---
+// ============================================================
+// TriVety.astro
+// Tři věty otevírající Bránu. Postupný fade-in v 1s, 3s, 5s.
+//
+// Texty čte z src/data/obsah.ts — klient mění tam.
+// ============================================================
+
+import { triVetyBrany } from '../data/obsah';
+---
+
+<div class="tri-vety" aria-label="Úvodní vzkaz">
+	{triVetyBrany.map((veta, i) => (
+		<p class="tri-vety__veta" style={`animation-delay: ${1 + i * 2}s;`}>{veta}</p>
+	))}
+</div>
+
+<style>
+	.tri-vety {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--vzduch-velky);
+		padding: var(--vzduch-stredni);
+		text-align: center;
+		pointer-events: none;
+	}
+
+	.tri-vety__veta {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+		letter-spacing: 0.05em;
+		color: var(--barva-text-brana);
+		opacity: 0;
+		animation: vplutiVety 1.6s ease-out forwards;
+		max-width: 60ch;
+		line-height: 1.5;
+		margin: 0;
+	}
+
+	@keyframes vplutiVety {
+		from { opacity: 0; transform: translateY(8px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.tri-vety__veta {
+			opacity: 1;
+			animation: none;
+		}
+	}
+</style>

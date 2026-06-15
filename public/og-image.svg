@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+	<defs>
+		<!-- Horizontální cesta: Morion (čerň) → Ametyst (lila) → Křišťál → bílá.
+		     Tmavá pasáž stlačena na ~24 %, aby bílá vrstva dostala viditelný prostor. -->
+		<linearGradient id="cesta" x1="0%" y1="0%" x2="100%" y2="0%">
+			<stop offset="0%"   stop-color="#000000"/>
+			<stop offset="13%"  stop-color="#1A0E20"/>
+			<stop offset="24%"  stop-color="#2E1734"/>
+			<stop offset="40%"  stop-color="#7C5388"/>
+			<stop offset="56%"  stop-color="#D7B6E0"/>
+			<stop offset="70%"  stop-color="#EEDDF3"/>
+			<stop offset="85%"  stop-color="#FAF5FB"/>
+			<stop offset="100%" stop-color="#FFFFFF"/>
+		</linearGradient>
+	</defs>
+
+	<!-- Celé plátno s gradientem cesty -->
+	<rect width="1200" height="630" fill="url(#cesta)"/>
+
+	<!-- Bílý dodekaedr — symbol brány mezi tmou a světlem.
+	     Stojí v tmavě fialové zóně, kde bílý stroke kontrastuje. -->
+	<g transform="translate(200, 235) scale(1.6)" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" opacity="0.95">
+		<polygon points="50,8 92,38 76,84 24,84 8,38"/>
+		<polygon points="50,72 28,58 36,36 64,36 72,58"/>
+		<line x1="50" y1="8" x2="36" y2="36"/>
+		<line x1="50" y1="8" x2="64" y2="36"/>
+		<line x1="92" y1="38" x2="64" y2="36"/>
+		<line x1="92" y1="38" x2="72" y2="58"/>
+		<line x1="76" y1="84" x2="72" y2="58"/>
+		<line x1="76" y1="84" x2="50" y2="72"/>
+		<line x1="24" y1="84" x2="50" y2="72"/>
+		<line x1="24" y1="84" x2="28" y2="58"/>
+		<line x1="8" y1="38" x2="28" y2="58"/>
+		<line x1="8" y1="38" x2="36" y2="36"/>
+	</g>
+
+	<!-- Titulek v Křišťálové zóně (před plnou bílou), černé písmo -->
+	<text x="720" y="305" text-anchor="middle"
+	      font-family="Inter, system-ui, -apple-system, sans-serif"
+	      font-weight="300" font-size="86"
+	      fill="#000000" letter-spacing="6">Morion Light</text>
+
+	<!-- Tagline pod titulkem, kurzíva, tmavě fialová -->
+	<text x="720" y="370" text-anchor="middle"
+	      font-family="Inter, system-ui, -apple-system, sans-serif"
+	      font-weight="300" font-size="30" font-style="italic"
+	      fill="#2E1734" letter-spacing="4">Cesta z temnoty ke světlu</text>
+</svg>

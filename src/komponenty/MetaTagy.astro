@@ -1,0 +1,53 @@
+---
+// ============================================================
+// MetaTagy.astro
+// Sdílená SEO infrastruktura pro všechny stránky.
+// Generuje title, meta description, OG, Twitter card, canonical.
+//
+// Použití (v <head> každého layoutu):
+//   <MetaTagy nadpis="..." popis="..." />
+// ============================================================
+
+interface Props {
+	nadpis: string;
+	popis: string;
+	ogObrazek?: string;
+	ogTyp?: 'website' | 'article';
+}
+
+const { nadpis, popis, ogObrazek = '/og-image.png', ogTyp = 'website' } = Astro.props;
+
+// PERSONALIZACE: změň název značky pro nový web
+const NAZEV_ZNACKY = 'Nová značka';
+
+const plnyNadpis = nadpis === NAZEV_ZNACKY ? NAZEV_ZNACKY : `${nadpis} | ${NAZEV_ZNACKY}`;
+const aktualniUrl = new URL(Astro.url.pathname, Astro.site).href;
+const ogObrazekUrl = new URL(ogObrazek, Astro.site).href;
+---
+
+<title>{plnyNadpis}</title>
+<meta name="description" content={popis} />
+<meta name="author" content="Autor" />
+<link rel="canonical" href={aktualniUrl} />
+
+<!-- Font Inter z Bunny Fonts — GDPR-friendly alternativa ke Google Fonts -->
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link rel="stylesheet" href="https://fonts.bunny.net/css?family=inter:300,400,500&display=swap" />
+
+<!-- Open Graph -->
+<meta property="og:type" content={ogTyp} />
+<meta property="og:title" content={plnyNadpis} />
+<meta property="og:description" content={popis} />
+<meta property="og:url" content={aktualniUrl} />
+<meta property="og:image" content={ogObrazekUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={`${NAZEV_ZNACKY} — ${popis}`} />
+<meta property="og:locale" content="cs_CZ" />
+<meta property="og:site_name" content={NAZEV_ZNACKY} />
+
+<!-- Twitter card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={plnyNadpis} />
+<meta name="twitter:description" content={popis} />
+<meta name="twitter:image" content={ogObrazekUrl} />

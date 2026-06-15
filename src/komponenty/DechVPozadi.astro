@@ -1,0 +1,112 @@
+---
+// ============================================================
+// DechVPozadi.astro
+// Světlo se rodí ve středu po vteřinách ticha a postupně rozkvétá:
+//   1) černá obrazovka (počká, až vplují nápisy)
+//   2) tmavá fialová #2E1734 vyklíčí ze středu
+//   3) jak nápisy končí, okraj se mění na střední #7C5388
+//   4) nakonec se okraj rozsvítí do světlé #D7B6E0
+// Pohyb barev jde výhradně z centra ven.
+// ============================================================
+---
+
+<div class="dech" aria-hidden="true">
+	<div class="dech__svetlo"></div>
+</div>
+
+<style>
+	/* @property umožňuje animovat hodnoty uvnitř gradientu
+	   (jinak by CSS přepínalo barvy skokem, ne plynule). */
+	@property --rozsah {
+		syntax: '<length>';
+		inherits: false;
+		initial-value: 0px;
+	}
+	@property --barva-stred {
+		syntax: '<color>';
+		inherits: false;
+		initial-value: rgba(46, 23, 52, 0);
+	}
+	@property --barva-mid {
+		syntax: '<color>';
+		inherits: false;
+		initial-value: rgba(46, 23, 52, 0);
+	}
+	@property --barva-okraj {
+		syntax: '<color>';
+		inherits: false;
+		initial-value: rgba(46, 23, 52, 0);
+	}
+
+	.dech {
+		/* absolute místo fixed — dech patří Bráně a se scrollem zmizí.
+		   Pro správné fungování musí být v elementu s position: relative. */
+		position: absolute;
+		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		pointer-events: none;
+		overflow: hidden;
+	}
+
+	.dech__svetlo {
+		width: 100vmax;
+		height: 100vmax;
+
+		--rozsah: 0vmax;
+		--barva-stred: rgba(46, 23, 52, 0);
+		--barva-mid: rgba(46, 23, 52, 0);
+		--barva-okraj: rgba(46, 23, 52, 0);
+
+		background: radial-gradient(
+			circle var(--rozsah) at center,
+			var(--barva-stred) 0%,
+			var(--barva-mid) 50%,
+			var(--barva-okraj) 100%
+		);
+
+		/* Zpoždění 7 s — všechny tři nápisy nejdřív musí vplout (poslední končí
+		   v cca 6,6 s). Pak 24 s pomalého, klidného rozkvětu od tmavé do světlé. */
+		animation: rozkvet var(--doba-vzniku) ease-out var(--doba-cekani) forwards;
+	}
+
+	@keyframes rozkvet {
+		/* Start: vše neviditelné, černá obrazovka. */
+		0% {
+			--rozsah: 0vmax;
+			--barva-stred: rgba(46, 23, 52, 0);
+			--barva-mid: rgba(46, 23, 52, 0);
+			--barva-okraj: rgba(46, 23, 52, 0);
+		}
+
+		/* Po prvních zhruba 1,6 s rozkvětu — tmavá fialová vyklíčí ze středu.
+		   Všechny tři stopy mají stejnou barvu = vidíme jen tmavou fialovou. */
+		20% {
+			--rozsah: 10vmax;
+			--barva-stred: #2E1734;
+			--barva-mid: #2E1734;
+			--barva-okraj: #2E1734;
+		}
+
+		/* Konec rozkvětu: střed zůstává tmavý (text nad ním zůstává čitelný),
+		   prostřední stop je střední lila, okraj je nejjasnější lila. */
+		100% {
+			--rozsah: 65vmax;
+			--barva-stred: #2E1734;
+			--barva-mid: #7C5388;
+			--barva-okraj: #D7B6E0;
+		}
+	}
+
+	/* Respekt k uživatelům, kteří mají v systému vypnuté animace. */
+	@media (prefers-reduced-motion: reduce) {
+		.dech__svetlo {
+			--rozsah: 65vmax;
+			--barva-stred: #2E1734;
+			--barva-mid: #7C5388;
+			--barva-okraj: #D7B6E0;
+			animation: none;
+		}
+	}
+</style>

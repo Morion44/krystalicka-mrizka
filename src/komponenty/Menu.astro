@@ -1,0 +1,102 @@
+---
+// ============================================================
+// Menu.astro
+// Tichý seznam položek menu. Otevírá se kliknutím na Dodekaedr.
+//
+// Položky čte z src/data/navigace.ts — klient mění tam.
+// ============================================================
+
+import { polozkyMenu } from '../data/navigace';
+---
+
+<nav class="menu" aria-hidden="true" aria-label="Hlavní navigace">
+	<ul class="menu__seznam">
+		{polozkyMenu.map((polozka) => (
+			<li><a href={polozka.odkaz} class="menu__odkaz">{polozka.nadpis}</a></li>
+		))}
+	</ul>
+</nav>
+
+<script>
+	const menu = document.querySelector('.menu');
+	const dodekaedr = document.querySelector('.dodekaedr');
+
+	function zavri() {
+		document.body.classList.remove('menu-je-otevreno');
+		if (menu) menu.setAttribute('aria-hidden', 'true');
+		if (dodekaedr) dodekaedr.setAttribute('aria-expanded', 'false');
+	}
+
+	document.addEventListener('click', (e) => {
+		if (!document.body.classList.contains('menu-je-otevreno')) return;
+		const cil = e.target as Element;
+		if (cil.closest('.menu__seznam')) return;
+		if (cil.closest('.dodekaedr')) return;
+		zavri();
+	});
+
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') zavri();
+	});
+
+	const polozky = document.querySelectorAll('.menu__odkaz');
+	polozky.forEach((odkaz) => {
+		odkaz.addEventListener('click', () => zavri());
+	});
+</script>
+
+<style>
+	.menu {
+		position: fixed;
+		inset: 0;
+		display: flex;
+		align-items: flex-start;
+		justify-content: center;
+		padding-top: 10vh;
+		background: rgba(229, 204, 236, 0.95);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.6s ease-out;
+		z-index: 10;
+	}
+
+	:global(body.menu-je-otevreno) .menu {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	:global(body.menu-je-otevreno) :global(.tri-vety) {
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.6s ease-out;
+	}
+
+	.menu__seznam {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-direction: column;
+		gap: var(--vzduch-stredni);
+		text-align: center;
+	}
+
+	.menu__odkaz {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.1rem, 2vw, 1.5rem);
+		letter-spacing: 0.04em;
+		color: #000000;
+		text-decoration: none;
+		transition: color var(--cas-rychly) ease-out, letter-spacing var(--cas-rychly) ease-out;
+	}
+
+	.menu__odkaz:hover,
+	.menu__odkaz:focus-visible {
+		color: var(--lila-stredni);
+		letter-spacing: 0.08em;
+		outline: none;
+	}
+</style>

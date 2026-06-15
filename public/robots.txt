@@ -1,0 +1,8 @@
+# Robots.txt — pravidla pro vyhledávací roboty
+# https://www.morionlight.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Sitemap — seznam všech stránek pro snazší indexaci
+Sitemap: https://www.morionlight.com/sitemap-index.xml

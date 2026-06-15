@@ -1,0 +1,75 @@
+---
+// ============================================================
+// ScrollNapoveda.astro
+// Tři šipky stojící pod sebou v pravém DOLNÍM rohu obrazovky.
+// Objeví se po doběhnutí celé sekvence Brány (v 38 s).
+// Všechny tři pulzují synchronně — vždy jsou vidět společně.
+// Pozicovaná absolutně uvnitř .brana — odjede s ní při scrollu.
+// ============================================================
+---
+
+<div class="scroll-napoveda" aria-hidden="true">
+	<svg viewBox="0 0 24 10" class="scroll-napoveda__sipka"
+		 xmlns="http://www.w3.org/2000/svg"
+		 fill="none" stroke="currentColor"
+		 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M 2 2 L 12 8 L 22 2" />
+	</svg>
+	<svg viewBox="0 0 24 10" class="scroll-napoveda__sipka"
+		 xmlns="http://www.w3.org/2000/svg"
+		 fill="none" stroke="currentColor"
+		 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M 2 2 L 12 8 L 22 2" />
+	</svg>
+	<svg viewBox="0 0 24 10" class="scroll-napoveda__sipka"
+		 xmlns="http://www.w3.org/2000/svg"
+		 fill="none" stroke="currentColor"
+		 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+		<path d="M 2 2 L 12 8 L 22 2" />
+	</svg>
+</div>
+
+<style>
+	.scroll-napoveda {
+		position: absolute;
+		right: 5vw;                    /* z pohledu diváka — pravá strana */
+		bottom: 10vh;                  /* na úrovni Dodekaedr-Menu (které je také v bottom: 10vh) */
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.6rem;
+
+		color: white;
+		pointer-events: none;
+
+		opacity: 0;
+
+		/* Celý balík šipek se objeví po Bráně (Dodekaedr končí v 26 s + 3 s buffer) a pak synchronně pulzuje. */
+		animation:
+			napoveda-objev 1.5s ease-out 29s forwards,
+			napoveda-puls 2.2s ease-in-out 30.5s infinite alternate;
+	}
+
+	.scroll-napoveda__sipka {
+		display: block;
+		width: 2rem;
+		height: 0.85rem;
+	}
+
+	@keyframes napoveda-objev {
+		to { opacity: 0.5; }
+	}
+
+	@keyframes napoveda-puls {
+		from { opacity: 0.5; }
+		to   { opacity: 0.95; }
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.scroll-napoveda {
+			opacity: 0.6;
+			animation: none;
+		}
+	}
+</style>

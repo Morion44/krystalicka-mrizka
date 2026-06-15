@@ -1,0 +1,192 @@
+---
+// ============================================================
+// CookiesLista.astro
+// Tichá lišta dole na obrazovce s informací o cookies a třemi
+// volbami: Odmítnout vše, Nastavení, Přijmout vše.
+//
+// Volba se ukládá do localStorage. Po souhlasu/odmítnutí se
+// lišta neukáže znova.
+//
+// „Nastavení" momentálně zobrazí informaci, že web zatím cookies
+// nepoužívá — plnohodnotný panel s přepínači po kategoriích
+// (nezbytné/analytické/marketingové) postavíme, až přidáme
+// skutečnou analytiku (např. Plausible).
+// ============================================================
+---
+
+<aside class="cookies-lista" id="cookies-lista" aria-hidden="true" aria-label="Souhlas s cookies">
+	<div class="cookies-lista__obsah">
+		<div class="cookies-lista__text-blok">
+			<h3 class="cookies-lista__nadpis">Používáme cookies</h3>
+			<p class="cookies-lista__text">
+				Tato webová stránka používá cookies pro zajištění správného fungování, analýzu návštěvnosti a personalizaci obsahu. Některé cookies jsou nezbytné pro fungování webu, jiné používáme s vaším souhlasem.
+				Více informací najdete v našich <a href="/ochrana-osobnich-udaju" class="cookies-lista__odkaz">zásadách ochrany osobních údajů</a>.
+			</p>
+		</div>
+		<div class="cookies-lista__tlacitka">
+			<button type="button" class="cookies-lista__tlacitko cookies-lista__tlacitko--sekundar" id="cookies-odmitnout">
+				Odmítnout vše
+			</button>
+			<button type="button" class="cookies-lista__tlacitko cookies-lista__tlacitko--sekundar" id="cookies-nastaveni">
+				Nastavení
+			</button>
+			<button type="button" class="cookies-lista__tlacitko cookies-lista__tlacitko--primar" id="cookies-prijmout">
+				Přijmout vše
+			</button>
+		</div>
+	</div>
+</aside>
+
+<script>
+	const KLIC = 'morionlight-cookies-souhlas';
+	const lista = document.getElementById('cookies-lista');
+	const btnPrijmout = document.getElementById('cookies-prijmout');
+	const btnOdmitnout = document.getElementById('cookies-odmitnout');
+	const btnNastaveni = document.getElementById('cookies-nastaveni');
+
+	// Zobrazit lištu, pokud uživatel ještě neudělal volbu
+	if (lista && typeof localStorage !== 'undefined') {
+		if (!localStorage.getItem(KLIC)) {
+			setTimeout(() => {
+				lista.setAttribute('aria-hidden', 'false');
+			}, 1500);
+		}
+	}
+
+	const ulozit = (volba: string) => {
+		try {
+			localStorage.setItem(KLIC, volba);
+		} catch (e) {
+			// localStorage zakázán — souhlas platí jen pro tuto návštěvu
+		}
+		if (lista) lista.setAttribute('aria-hidden', 'true');
+	};
+
+	btnPrijmout?.addEventListener('click', () => ulozit('vse'));
+	btnOdmitnout?.addEventListener('click', () => ulozit('jen-nezbytne'));
+
+	btnNastaveni?.addEventListener('click', () => {
+		// Plnohodnotný panel s přepínači přidáme, až web bude používat
+		// skutečnou analytiku. Teď jen tichá informace.
+		alert(
+			'Detailní nastavení cookies bude k dispozici, jakmile web začne používat ' +
+			'analytické nebo marketingové cookies. Aktuálně web neukládá žádné ' +
+			'nenezbytné údaje. Děkujeme za pochopení.'
+		);
+	});
+</script>
+
+<style>
+	.cookies-lista {
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 50;
+
+		background: rgba(0, 0, 0, 0.92);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		color: white;
+		padding: var(--vzduch-stredni);
+		border-top: 1px solid rgba(124, 83, 136, 0.4);
+
+		opacity: 0;
+		pointer-events: none;
+		transform: translateY(100%);
+		transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+	}
+
+	.cookies-lista[aria-hidden="false"] {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateY(0);
+	}
+
+	.cookies-lista__obsah {
+		max-width: 100ch;
+		margin: 0 auto;
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--vzduch-stredni);
+	}
+
+	.cookies-lista__text-blok {
+		flex: 1 1 380px;
+	}
+
+	.cookies-lista__nadpis {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-stredni);
+		font-size: 1rem;
+		letter-spacing: 0.06em;
+		margin: 0 0 0.3rem 0;
+		color: white;
+	}
+
+	.cookies-lista__text {
+		margin: 0;
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.85rem;
+		line-height: 1.55;
+		letter-spacing: 0.01em;
+		color: white;
+	}
+
+	.cookies-lista__odkaz {
+		color: var(--lila-svetla);
+		text-decoration: underline;
+		text-decoration-color: var(--lila-stredni);
+		text-underline-offset: 0.25em;
+		transition: color 0.3s ease-out;
+	}
+
+	.cookies-lista__odkaz:hover {
+		color: white;
+	}
+
+	.cookies-lista__tlacitka {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		align-items: center;
+	}
+
+	.cookies-lista__tlacitko {
+		background: transparent;
+		border: 1px solid white;
+		color: white;
+		padding: 0.5rem 1.2rem;
+
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		cursor: pointer;
+		white-space: nowrap;
+
+		transition: background 0.3s ease-out, color 0.3s ease-out;
+	}
+
+	.cookies-lista__tlacitko:hover,
+	.cookies-lista__tlacitko:focus-visible {
+		background: white;
+		color: black;
+		outline: none;
+	}
+
+	/* Primární tlačítko (Přijmout vše) — vždy plné */
+	.cookies-lista__tlacitko--primar {
+		background: white;
+		color: black;
+	}
+
+	.cookies-lista__tlacitko--primar:hover {
+		background: var(--lila-svetla);
+		color: black;
+	}
+</style>

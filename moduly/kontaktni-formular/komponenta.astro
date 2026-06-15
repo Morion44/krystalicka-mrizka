@@ -1,0 +1,130 @@
+---
+// KontaktniFormular.astro
+// Vlož do src/komponenty/ a importuj v Komnatě.
+---
+
+<form class="kontaktni-formular" id="kontakt-form">
+	<label class="pole">
+		<span class="pole__nazev">Jméno *</span>
+		<input type="text" name="jmeno" required minlength="2" maxlength="100" />
+	</label>
+
+	<label class="pole">
+		<span class="pole__nazev">E-mail *</span>
+		<input type="email" name="email" required maxlength="200" />
+	</label>
+
+	<label class="pole">
+		<span class="pole__nazev">Zpráva *</span>
+		<textarea name="zprava" required minlength="10" maxlength="5000" rows="6"></textarea>
+	</label>
+
+	<!-- Honey pot anti-spam (skryté pole, boti ho vyplní, lidé ne) -->
+	<label class="honeypot" aria-hidden="true">
+		<input type="text" name="honeypot" tabindex="-1" autocomplete="off" />
+	</label>
+
+	<button type="submit" class="tlacitko">Odeslat</button>
+
+	<p class="stav" id="stav" role="status" aria-live="polite"></p>
+</form>
+
+<script>
+	const form = document.getElementById('kontakt-form') as HTMLFormElement;
+	const stav = document.getElementById('stav') as HTMLParagraphElement;
+
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
+		stav.textContent = 'Odesílám…';
+
+		const formData = new FormData(form);
+		const data = Object.fromEntries(formData.entries());
+
+		try {
+			const res = await fetch('/api/kontakt', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify(data)
+			});
+
+			if (res.ok) {
+				stav.textContent = 'Děkuji, zpráva odeslána.';
+				form.reset();
+			} else {
+				stav.textContent = 'Něco se pokazilo. Zkuste to prosím znovu.';
+			}
+		} catch (err) {
+			stav.textContent = 'Spojení selhalo. Zkuste to prosím znovu.';
+		}
+	});
+</script>
+
+<style>
+	.kontaktni-formular {
+		display: flex;
+		flex-direction: column;
+		gap: var(--vzduch-stredni);
+		max-width: 60ch;
+		margin: 0 auto;
+	}
+
+	.pole {
+		display: flex;
+		flex-direction: column;
+		gap: var(--vzduch-maly);
+	}
+
+	.pole__nazev {
+		font-weight: var(--pismo-vaha-stredni);
+		font-size: 0.95rem;
+		color: var(--barva-text-komnata);
+	}
+
+	input, textarea {
+		font-family: var(--pismo-zakladni);
+		font-size: 1rem;
+		padding: 0.75rem;
+		border: 1px solid var(--lila-stredni);
+		border-radius: 4px;
+		background: rgba(255, 255, 255, 0.5);
+	}
+
+	input:focus, textarea:focus {
+		outline: 2px solid var(--lila-tmava);
+		outline-offset: 2px;
+	}
+
+	textarea {
+		resize: vertical;
+		font-family: var(--pismo-zakladni);
+	}
+
+	.honeypot {
+		position: absolute;
+		left: -9999px;
+	}
+
+	.tlacitko {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 1rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding: 0.85rem 2rem;
+		border: 1px solid var(--lila-tmava);
+		background: transparent;
+		color: var(--barva-text-komnata);
+		cursor: pointer;
+		transition: background var(--cas-rychly) ease-out, color var(--cas-rychly) ease-out;
+	}
+
+	.tlacitko:hover {
+		background: var(--lila-tmava);
+		color: #ffffff;
+	}
+
+	.stav {
+		text-align: center;
+		font-style: italic;
+	}
+</style>

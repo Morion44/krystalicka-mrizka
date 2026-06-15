@@ -1,0 +1,85 @@
+---
+// ============================================================
+// BilaVrstvaLayout.astro
+// Layout pro čistě bílou datovou vrstvu webu — Obchodní podmínky
+// a Ochrana osobních údajů.
+//
+// Pozadí: pravá bílá #FFFFFF. Černé písmo, menší velikost,
+// širší obsahový pruh než Komnata (data dýchají do stran).
+// Tady se nehodí poetika — je to vrstva paragrafů a faktů.
+// ============================================================
+
+import '../styly/tokeny.css';
+import '../styly/globalni.css';
+import Dodekaedr from '../komponenty/Dodekaedr.astro';
+import Menu from '../komponenty/Menu.astro';
+import CookiesLista from '../komponenty/CookiesLista.astro';
+import MetaTagy from '../komponenty/MetaTagy.astro';
+
+const { nadpis, popis } = Astro.props;
+---
+
+<html lang="cs">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<MetaTagy nadpis={nadpis} popis={popis} />
+	</head>
+	<body class="je-bila-vrstva">
+		<header class="bila-vrstva-zahlavi">
+			<a href="/" class="bila-vrstva-zahlavi__odkaz">Morion Light</a>
+		</header>
+
+		<main class="bila-vrstva">
+			<slot />
+		</main>
+
+		<Menu />
+		<Dodekaedr />
+		<CookiesLista />
+	</body>
+</html>
+
+<style is:global>
+	body.je-bila-vrstva {
+		background: #FFFFFF;
+		color: #000000;
+		min-height: 100vh;
+	}
+</style>
+
+<style>
+	.bila-vrstva-zahlavi {
+		position: fixed;
+		top: 5vh;
+		left: 5vw;
+		z-index: 5;
+	}
+
+	.bila-vrstva-zahlavi__odkaz {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.9rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		color: #000000;
+		text-decoration: none;
+
+		transition: letter-spacing 0.3s ease-out, color 0.3s ease-out;
+	}
+
+	.bila-vrstva-zahlavi__odkaz:hover,
+	.bila-vrstva-zahlavi__odkaz:focus-visible {
+		color: var(--lila-stredni);
+		letter-spacing: 0.24em;
+		outline: none;
+	}
+
+	.bila-vrstva {
+		max-width: 100ch;                       /* širší než Komnata, data dýchají */
+		margin: 0 auto;
+		padding: 16vh var(--vzduch-stredni) 18vh;
+	}
+</style>

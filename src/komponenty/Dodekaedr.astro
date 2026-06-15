@@ -1,0 +1,180 @@
+---
+// ============================================================
+// Dodekaedr.astro
+// Bílý dodekaedr s nápisem "Menu" pod sebou.
+// Slouží jako navigační kotva — jediný interaktivní prvek Brány.
+//
+// Sekvence:
+//   1) startuje pod obrazovkou, neviditelný
+//   2) v t=24s (rozkvět končí v t=22s + 2s ticha) začíná stoupat
+//   3) hupsne za 2s s lehkým překmitnutím — žije, ne usíná
+//   4) ustálí se v polovině prostoru mezi spodním nápisem a dolním okrajem
+//
+// Kliknutí: dodekaedr se na 1,5 s rozzáří lila září.
+// ============================================================
+---
+
+<button class="dodekaedr" type="button" aria-label="Otevřít menu">
+	<svg class="dodekaedr__teleso"
+		 viewBox="0 0 100 100"
+		 xmlns="http://www.w3.org/2000/svg"
+		 fill="none"
+		 stroke="currentColor"
+		 stroke-width="1.5"
+		 stroke-linecap="round"
+		 stroke-linejoin="round">
+		<!-- Vnější pětiúhelník (silueta) -->
+		<polygon points="50,8 92,38 76,84 24,84 8,38" />
+		<!-- Vnitřní obrácený pětiúhelník -->
+		<polygon points="50,72 28,58 36,36 64,36 72,58" />
+		<!-- Hrany propojující vnější a vnitřní vrcholy -->
+		<line x1="50" y1="8"  x2="36" y2="36" />
+		<line x1="50" y1="8"  x2="64" y2="36" />
+		<line x1="92" y1="38" x2="64" y2="36" />
+		<line x1="92" y1="38" x2="72" y2="58" />
+		<line x1="76" y1="84" x2="72" y2="58" />
+		<line x1="76" y1="84" x2="50" y2="72" />
+		<line x1="24" y1="84" x2="50" y2="72" />
+		<line x1="24" y1="84" x2="28" y2="58" />
+		<line x1="8"  y1="38" x2="28" y2="58" />
+		<line x1="8"  y1="38" x2="36" y2="36" />
+	</svg>
+	<span class="dodekaedr__nazev">Menu</span>
+</button>
+
+<script>
+	// Kliknutí: krátké rozzáření na 1,5 s + otevření/zavření menu.
+	const tlacitko = document.querySelector('.dodekaedr');
+	if (tlacitko) {
+		tlacitko.addEventListener('click', (e) => {
+			e.stopPropagation();
+
+			// Rozzáření jako vizuální zpětná vazba
+			tlacitko.classList.add('je-aktivni');
+			setTimeout(() => tlacitko.classList.remove('je-aktivni'), 1500);
+
+			// Toggle menu skrze třídu na <body>
+			const otevreno = document.body.classList.toggle('menu-je-otevreno');
+			tlacitko.setAttribute('aria-expanded', String(otevreno));
+
+			const menu = document.querySelector('.menu');
+			if (menu) menu.setAttribute('aria-hidden', String(!otevreno));
+		});
+	}
+
+	// Detekce, ve které části webu se uživatel nachází.
+	// Když scrolluje za polovinu Brány, body dostane třídu .je-v-sini —
+	// barvy Dodekaedru se podle ní přepnou z bílé na černou.
+	const aktualizujKontext = () => {
+		const vSini = window.scrollY > window.innerHeight * 0.5;
+		document.body.classList.toggle('je-v-sini', vSini);
+	};
+	window.addEventListener('scroll', aktualizujKontext, { passive: true });
+	aktualizujKontext();   // počáteční stav po načtení stránky
+</script>
+
+<style>
+	.dodekaedr {
+		position: fixed;
+		left: 50%;
+		bottom: 10vh;                /* níže, symetricky se seznamem nahoře */
+		transform: translate(-50%, 200%);   /* startovní pozice — pod obrazovkou */
+		z-index: 20;                /* nad menu (které má z-index 10) */
+
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.45rem;
+
+		background: transparent;
+		border: none;
+		padding: 0.5rem 1rem;
+		color: white;               /* výchozí — pro tmavou Bránu */
+		cursor: pointer;
+
+		opacity: 0;
+
+		/* Plynulý přechod barvy při scrollu z Brány do Síně */
+		transition: color 0.5s ease-out;
+
+		/* 24 s ticha → 2 s rychlého „hupsnutí" s lehkým překmitem.
+		   cubic-bezier vytváří mírné přestřelení a usazení — pohyb žije. */
+		animation: vyhoupnout 2s cubic-bezier(0.34, 1.45, 0.64, 1) 24s forwards;
+	}
+
+	/* Když je uživatel ve světlé části webu (Síň, Komnata, bílá vrstva),
+	   Dodekaedr i nápis Menu se přepnou do tmavé barvy. */
+	:global(body.je-v-sini) .dodekaedr,
+	:global(body.menu-je-otevreno) .dodekaedr,
+	:global(body.je-komnata) .dodekaedr,
+	:global(body.je-bila-vrstva) .dodekaedr {
+		color: #000000;
+	}
+
+	/* Na Komnatě i v bílé vrstvě je Dodekaedr od začátku vidět — žádné čekání. */
+	:global(body.je-komnata) .dodekaedr,
+	:global(body.je-bila-vrstva) .dodekaedr {
+		opacity: 1;
+		transform: translate(-50%, 0);
+		animation: none;
+	}
+
+	.dodekaedr__teleso {
+		width: 2.7rem;       /* 1,5× zvětšeno */
+		height: 2.7rem;
+		transition: filter 0.4s ease-out;
+	}
+
+	.dodekaedr__nazev {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 1.275rem;   /* 1,5× zvětšeno */
+		letter-spacing: 0.06em;
+		color: inherit;        /* dědí z .dodekaedr — adaptivní bílá/černá */
+		transition: color 0.5s ease-out;
+	}
+
+	@keyframes vyhoupnout {
+		from {
+			opacity: 0;
+			transform: translate(-50%, 200%);
+		}
+		to {
+			opacity: 1;
+			transform: translate(-50%, 0);
+		}
+	}
+
+	/* Drobné zvýraznění při najetí myší — tichý signál interaktivity */
+	.dodekaedr:hover .dodekaedr__teleso {
+		filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+	}
+
+	/* Aktivní stav po kliknutí — krátké, silné lila rozzáření.
+	   MUSÍ být POD :hover pravidlem, jinak by ho hover přebil. */
+	.dodekaedr.je-aktivni .dodekaedr__teleso,
+	.dodekaedr.je-aktivni:hover .dodekaedr__teleso {
+		filter:
+			drop-shadow(0 0 10px white)
+			drop-shadow(0 0 25px var(--lila-svetla))
+			drop-shadow(0 0 50px var(--lila-stredni));
+	}
+
+	/* Při světlém pozadí (Síň nebo otevřené menu) flash používá
+	   tmavé tóny — bílá záře by se ztratila. */
+	:global(body.je-v-sini) .dodekaedr.je-aktivni .dodekaedr__teleso,
+	:global(body.menu-je-otevreno) .dodekaedr.je-aktivni .dodekaedr__teleso {
+		filter:
+			drop-shadow(0 0 10px var(--lila-tmava))
+			drop-shadow(0 0 25px var(--lila-stredni))
+			drop-shadow(0 0 50px var(--lila-svetla));
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.dodekaedr {
+			opacity: 1;
+			transform: translate(-50%, 0);
+			animation: none;
+		}
+	}
+</style>

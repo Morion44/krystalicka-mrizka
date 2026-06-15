@@ -1,0 +1,196 @@
+---
+// ============================================================
+// index.astro — hlavní stránka
+//
+// Architektura:
+//   1. Brána (úvodní obrazovka s lila polem + tři věty + Dodekaedr-Menu)
+//   2. Síň (scrollovací jednostránka s obsahovými sekcemi)
+//   3. Vrchol (bílá pasáž jako finále)
+// ============================================================
+
+import '../styly/tokeny.css';
+import '../styly/globalni.css';
+
+import DechVPozadi from '../komponenty/DechVPozadi.astro';
+import TriVety from '../komponenty/TriVety.astro';
+import Dodekaedr from '../komponenty/Dodekaedr.astro';
+import Menu from '../komponenty/Menu.astro';
+import ScrollNapoveda from '../komponenty/ScrollNapoveda.astro';
+import CookiesLista from '../komponenty/CookiesLista.astro';
+import MetaTagy from '../komponenty/MetaTagy.astro';
+import StrukturovanaData from '../komponenty/StrukturovanaData.astro';
+
+import { uvodniVzkaz, ctyriVetyVrcholu } from '../data/obsah';
+---
+
+<html lang="cs">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<MetaTagy
+			nadpis="Název značky"
+			popis="Krátký popis pro Google snippets (max 160 znaků) s klíčovými slovy."
+		/>
+		<StrukturovanaData />
+	</head>
+	<body>
+		<!-- BRÁNA -->
+		<section class="brana">
+			<DechVPozadi />
+			<TriVety />
+			<ScrollNapoveda />
+		</section>
+
+		<!-- SÍŇ -->
+		<section class="sin">
+			<section class="sin-sekce sin-sekce--uvodni-vzkaz">
+				<p class="uvodni-vzkaz" set:html={uvodniVzkaz.replace(/\n/g, '<br />')} />
+			</section>
+
+			<section class="sin-sekce" id="kdo-jsem">
+				<article class="sin-blok">
+					<h2 class="sin-blok__nadpis">Kdo jsem?</h2>
+					<div class="sin-blok__telo">
+						<p>Tady krátký osobní úvod, který otevírá vztah s návštěvníkem.</p>
+					</div>
+					<a href="/kdo-jsem" class="prolink">Chci vědět více…</a>
+				</article>
+			</section>
+
+			<section class="sin-sekce" id="sluzba-1">
+				<article class="sin-blok">
+					<h2 class="sin-blok__nadpis">Služba 1</h2>
+					<div class="sin-blok__telo">
+						<p>Popis první služby — co konkrétně klient získá.</p>
+					</div>
+					<a href="/sluzba-1" class="prolink">Chci vědět více…</a>
+				</article>
+			</section>
+
+			<section class="sin-sekce" id="kontakt">
+				<article class="sin-blok">
+					<h2 class="sin-blok__nadpis">Kontakt</h2>
+					<div class="sin-blok__telo">
+						<p>Telefon, e-mail, sociální sítě.</p>
+					</div>
+				</article>
+			</section>
+		</section>
+
+		<!-- VRCHOL -->
+		<section class="vrchol" aria-label="Konec cesty">
+			<p class="vrchol__vzkaz">
+				{ctyriVetyVrcholu.map((veta, i) => (
+					<>{veta}{i < ctyriVetyVrcholu.length - 1 && <br />}</>
+				))}
+			</p>
+		</section>
+
+		<Menu />
+		<Dodekaedr />
+		<CookiesLista />
+	</body>
+</html>
+
+<style>
+	.brana {
+		position: relative;
+		width: 100%;
+		height: 100vh;
+		overflow: hidden;
+		background: var(--barva-pozadi-brana);
+	}
+
+	.sin {
+		position: relative;
+		width: 100%;
+		background: linear-gradient(
+			to bottom,
+			var(--lila-stredni) 0%,
+			var(--lila-svetla) 40%,
+			var(--lila-velmi-svetla) 80%,
+			var(--lila-velmi-svetla) 100%
+		);
+		color: #000000;
+	}
+
+	.sin-sekce {
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: var(--vzduch-velky) var(--vzduch-stredni) 25vh;
+	}
+
+	.uvodni-vzkaz {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+		line-height: 1.8;
+		letter-spacing: 0.03em;
+		color: #000000;
+		text-align: center;
+		max-width: var(--sirka-text);
+	}
+
+	.sin-blok {
+		max-width: var(--sirka-blok);
+		text-align: center;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.sin-blok__nadpis {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+		letter-spacing: 0.05em;
+		color: #000000;
+		margin: 0 0 var(--vzduch-velky) 0;
+	}
+
+	.sin-blok__telo p {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.05rem, 2vw, 1.55rem);
+		line-height: 1.55;
+		letter-spacing: 0.02em;
+		color: #000000;
+		margin: 0 0 var(--vzduch-stredni) 0;
+	}
+
+	.sin-blok .prolink {
+		margin-top: var(--vzduch-velky);
+	}
+
+	/* Vrchol */
+	.vrchol {
+		min-height: 100vh;
+		background: linear-gradient(
+			to bottom,
+			var(--lila-velmi-svetla) 0%,
+			var(--lila-bila) 25%,
+			#FFFFFF 75%,
+			#FFFFFF 100%
+		);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 20vh var(--vzduch-stredni) 25vh;
+	}
+
+	.vrchol__vzkaz {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+		line-height: 1.8;
+		letter-spacing: 0.03em;
+		color: #000000;
+		text-align: center;
+		max-width: var(--sirka-text);
+		margin: 0;
+	}
+</style>
