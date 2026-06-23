@@ -26,3 +26,8 @@ yarn-error.log*
 
 # OS
 Thumbs.db
+
+# Soukromé dokumenty — zůstávají jen na Blančině počítači, nikdy na veřejný GitHub
+# (kotevní dokument a osobní průvodce prací s AI)
+CLAUDE.md
+KONTEXTOVE-OKNO.md
