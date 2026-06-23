@@ -8,6 +8,8 @@
 //   <MetaTagy nadpis="..." popis="..." />
 // ============================================================
 
+import { kontakt } from '../data/kontakt';
+
 interface Props {
 	nadpis: string;
 	popis: string;
@@ -17,8 +19,9 @@ interface Props {
 
 const { nadpis, popis, ogObrazek = '/og-image.png', ogTyp = 'website' } = Astro.props;
 
-// PERSONALIZACE: změň název značky pro nový web
-const NAZEV_ZNACKY = 'Nová značka';
+// Název značky i autor čtou z jednoho zdroje pravdy: src/data/kontakt.ts
+const NAZEV_ZNACKY = kontakt.znacka;
+const AUTOR = [kontakt.titul, kontakt.jmeno].filter(Boolean).join(' ');
 
 const plnyNadpis = nadpis === NAZEV_ZNACKY ? NAZEV_ZNACKY : `${nadpis} | ${NAZEV_ZNACKY}`;
 const aktualniUrl = new URL(Astro.url.pathname, Astro.site).href;
@@ -27,7 +30,7 @@ const ogObrazekUrl = new URL(ogObrazek, Astro.site).href;
 
 <title>{plnyNadpis}</title>
 <meta name="description" content={popis} />
-<meta name="author" content="Autor" />
+<meta name="author" content={AUTOR} />
 <link rel="canonical" href={aktualniUrl} />
 
 <!-- Font Inter z Bunny Fonts — GDPR-friendly alternativa ke Google Fonts -->

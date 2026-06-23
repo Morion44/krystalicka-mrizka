@@ -3,13 +3,20 @@
 // StrukturovanaData.astro
 // JSON-LD strukturovaná data podle schema.org.
 //
-// ★ DOPLŇ ÚDAJE PRO NOVÝ WEB ★
-// - název značky, popis, klíčová slova
-// - jméno autora, jeho expertize
-// - služby s vlastním popisem
+// ★ Identita, adresa, kontakty a sociální sítě se čtou z jednoho
+//   zdroje pravdy: src/data/kontakt.ts. ★
+// Tady dolaď jen popis služeb a expertní oblasti (knowsAbout).
 //
 // Vkládá se do <head> hlavní stránky.
 // ============================================================
+
+import { kontakt } from '../data/kontakt';
+
+const web = kontakt.domena.replace(/\/$/, ''); // bez lomítka na konci
+const autor = [kontakt.titul, kontakt.jmeno].filter(Boolean).join(' ');
+
+// Sociální sítě → pole neprázdných odkazů (sameAs)
+const sameAs = Object.values(kontakt.socialniSite).filter(Boolean);
 
 const data = {
 	"@context": "https://schema.org",
@@ -17,45 +24,44 @@ const data = {
 		// 1. Značka jako podnik
 		{
 			"@type": ["ProfessionalService", "LocalBusiness"],
-			"@id": "https://nova-domena.cz/#business",
-			"name": "Název značky",
-			"alternateName": "Jméno autora — Název značky",
-			"description": "Krátký popis (max 200 znaků) s klíčovými slovy pro cílovou skupinu.",
-			"url": "https://nova-domena.cz",
-			"telephone": "+420000000000",
-			"email": "info@nova-domena.cz",
-			"image": "https://nova-domena.cz/og-image.png",
-			"logo": "https://nova-domena.cz/favicon.svg",
+			"@id": `${web}/#business`,
+			"name": kontakt.znacka,
+			"alternateName": `${autor} — ${kontakt.znacka}`,
+			"description": kontakt.popis,
+			"url": web,
+			"telephone": kontakt.telefon,
+			"email": kontakt.email,
+			"image": `${web}/og-image.png`,
+			"logo": `${web}/favicon.svg`,
 			"address": {
 				"@type": "PostalAddress",
-				"postalCode": "110 00",
-				"addressLocality": "Praha",
-				"addressRegion": "Hlavní město Praha",
-				"addressCountry": "CZ"
+				"postalCode": kontakt.adresa.PSC,
+				"addressLocality": kontakt.adresa.mesto,
+				"addressRegion": kontakt.adresa.kraj,
+				"addressCountry": kontakt.adresa.zeme
 			},
 			"areaServed": [
-				{ "@type": "City", "name": "Praha" },
+				{ "@type": "City", "name": kontakt.adresa.mesto },
 				{ "@type": "Country", "name": "Česká republika" }
 			],
-			"priceRange": "0–0 Kč",
-			"founder": { "@id": "https://nova-domena.cz/#autor" },
-			"employee": { "@id": "https://nova-domena.cz/#autor" },
+			"founder": { "@id": `${web}/#autor` },
+			"employee": { "@id": `${web}/#autor` },
 			"makesOffer": [
-				{ "@id": "https://nova-domena.cz/#sluzba-1" }
+				{ "@id": `${web}/#sluzba-1` }
 			],
-			"sameAs": []
+			"sameAs": sameAs
 		},
 
 		// 2. Autor jako konkrétní osoba
 		{
 			"@type": "Person",
-			"@id": "https://nova-domena.cz/#autor",
-			"name": "Jméno Příjmení",
-			"jobTitle": "Pozice",
+			"@id": `${web}/#autor`,
+			"name": autor,
+			"jobTitle": kontakt.pozice,
 			"description": "Krátký popis autora a jeho přístupu.",
-			"url": "https://nova-domena.cz/kdo-jsem",
-			"image": "https://nova-domena.cz/og-image.png",
-			"worksFor": { "@id": "https://nova-domena.cz/#business" },
+			"url": `${web}/kdo-jsem`,
+			"image": `${web}/og-image.png`,
+			"worksFor": { "@id": `${web}/#business` },
 			"knowsAbout": [
 				"Expertní oblast 1",
 				"Expertní oblast 2",
@@ -68,12 +74,12 @@ const data = {
 		// 3. Služba (zkopíruj a pozměň pro další služby)
 		{
 			"@type": "Service",
-			"@id": "https://nova-domena.cz/#sluzba-1",
+			"@id": `${web}/#sluzba-1`,
 			"name": "Název služby",
 			"serviceType": "Typ služby",
 			"description": "Popis služby s klíčovými slovy.",
-			"url": "https://nova-domena.cz/sluzba-1",
-			"provider": { "@id": "https://nova-domena.cz/#business" },
+			"url": `${web}/sluzba-1`,
+			"provider": { "@id": `${web}/#business` },
 			"areaServed": { "@type": "Country", "name": "Česká republika" }
 		}
 	]

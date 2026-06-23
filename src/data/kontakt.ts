@@ -12,6 +12,10 @@ export const kontakt = {
 	pozice: 'Profesní pozice',          // např. 'Životní koučka'
 	znacka: 'Název značky',             // např. 'Morion Light'
 
+	// Web — čerpá z toho SEO (MetaTagy, StrukturovanaData)
+	domena: 'https://example.cz',       // plná adresa bez lomítka na konci
+	popis: 'Krátký popis webu (max 160 znaků) s klíčovými slovy pro cílovou skupinu.',
+
 	telefon: '+420000000000',           // E.164 formát (bez mezer)
 	telefonDisplay: '+420 000 000 000', // pro zobrazení
 	email: 'info@example.cz',

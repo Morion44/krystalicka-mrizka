@@ -57,6 +57,9 @@ Cal.com nebo Calendly embed. Pro: weby s objednávkovým systémem (terapie, kou
 ### 📊 analytics
 Plausible nebo Cloudflare Web Analytics. Bez cookies. Pro: weby, kde chceš měřit návštěvnost bez tracking skriptů.
 
+### 🌍 i18n
+Dvojjazyčnost CS / EN (rozšiřitelné). Výchozí jazyk bez prefixu, ostatní s `/en/...`. Slovník překladů, přepínač jazyka, hreflang pro SEO. Pro: weby mířící i na zahraničí *(Open Your Power, InterfaceArchitekt)*.
+
 ---
 
 ## Filozofie modulů

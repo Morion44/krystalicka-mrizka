@@ -1,0 +1,127 @@
+---
+// ============================================================
+// 404.astro — stránka „ztracená cesta"
+//
+// Duch Brány: tmavé pozadí, lila dech, tři věty postupně vplují,
+// pod nimi tichý odkaz zpět na úvod.
+//
+// ★ Texty se mění v src/data/obsah.ts (triVety404, odkaz404Zpet). ★
+// Tři věty jsou tak parametrizovatelné pro každý web zvlášť.
+// ============================================================
+
+import '../styly/tokeny.css';
+import '../styly/globalni.css';
+
+import DechVPozadi from '../komponenty/DechVPozadi.astro';
+import MetaTagy from '../komponenty/MetaTagy.astro';
+
+import { triVety404, odkaz404Zpet } from '../data/obsah';
+---
+
+<html lang="cs">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<!-- 404 nemá být indexovaná vyhledávači -->
+		<meta name="robots" content="noindex, follow" />
+		<MetaTagy
+			nadpis="Stránka nenalezena"
+			popis="Tato cesta nikam nevede. Vrať se k Bráně a najdi cestu znovu."
+		/>
+	</head>
+	<body>
+		<main class="brana-404">
+			<DechVPozadi />
+
+			<div class="brana-404__obsah">
+				<p class="brana-404__kod" aria-hidden="true">404</p>
+
+				<div class="brana-404__vety" aria-label="Stránka nenalezena">
+					{triVety404.map((veta, i) => (
+						<p class="brana-404__veta" style={`animation-delay: ${1 + i * 1.4}s;`}>{veta}</p>
+					))}
+				</div>
+
+				<a href="/" class="prolink brana-404__zpet">{odkaz404Zpet}</a>
+			</div>
+		</main>
+	</body>
+</html>
+
+<style>
+	.brana-404 {
+		position: relative;
+		width: 100%;
+		min-height: 100vh;
+		overflow: hidden;
+		background: var(--barva-pozadi-brana);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.brana-404__obsah {
+		position: relative;
+		z-index: 2;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: var(--vzduch-stredni);
+		gap: var(--vzduch-velky);
+	}
+
+	/* Tiché velké číslo — jen náznak, ne křik */
+	.brana-404__kod {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(3.5rem, 12vw, 7rem);
+		letter-spacing: 0.1em;
+		color: var(--barva-text-brana);
+		opacity: 0.18;
+		margin: 0;
+	}
+
+	.brana-404__vety {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--vzduch-stredni);
+		max-width: 60ch;
+	}
+
+	.brana-404__veta {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: clamp(1.2rem, 2.4vw, 1.8rem);
+		letter-spacing: 0.05em;
+		line-height: 1.5;
+		color: var(--barva-text-brana);
+		margin: 0;
+		opacity: 0;
+		animation: vplutiVety404 1.6s ease-out forwards;
+	}
+
+	.brana-404__zpet {
+		color: var(--barva-text-brana);
+		opacity: 0;
+		animation: vplutiVety404 1.6s ease-out forwards;
+		animation-delay: 5s;
+	}
+
+	@keyframes vplutiVety404 {
+		from { opacity: 0; transform: translateY(8px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
+	/* Respekt k uživatelům, kteří nechtějí animace */
+	@media (prefers-reduced-motion: reduce) {
+		.brana-404__veta,
+		.brana-404__zpet {
+			opacity: 1;
+			animation: none;
+		}
+	}
+</style>

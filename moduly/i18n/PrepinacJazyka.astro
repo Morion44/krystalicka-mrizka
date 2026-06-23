@@ -1,0 +1,62 @@
+---
+// ============================================================
+// PrepinacJazyka.astro — TICHÝ PŘEPÍNAČ JAZYKA (modul i18n)
+//
+// Zobrazí dvojici CS / EN. Aktuální jazyk je zvýrazněný, druhý
+// odkazuje na tutéž stránku v jiném jazyce (přes prelozOdkaz).
+//
+// Po zkopírování modulu umísti do: src/komponenty/PrepinacJazyka.astro
+// a vlož do layoutů (např. vedle záhlaví).
+// ============================================================
+
+import { JAZYKY } from '../data/preklady';
+import { jazykZCesty, prelozOdkaz } from '../utils/jazyk';
+
+const pathname = Astro.url.pathname;
+const aktualni = jazykZCesty(pathname);
+---
+
+<nav class="prepinac-jazyka" aria-label="Přepínač jazyka">
+	{JAZYKY.map((jazyk) => (
+		jazyk === aktualni ? (
+			<span class="prepinac-jazyka__polozka prepinac-jazyka__polozka--aktivni" aria-current="true">
+				{jazyk.toUpperCase()}
+			</span>
+		) : (
+			<a class="prepinac-jazyka__polozka" href={prelozOdkaz(pathname, jazyk)} hreflang={jazyk}>
+				{jazyk.toUpperCase()}
+			</a>
+		)
+	))}
+</nav>
+
+<style>
+	.prepinac-jazyka {
+		display: inline-flex;
+		gap: var(--vzduch-maly);
+		align-items: center;
+	}
+
+	.prepinac-jazyka__polozka {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.8rem;
+		letter-spacing: 0.12em;
+		text-decoration: none;
+		color: inherit;
+		opacity: 0.5;
+		transition: opacity var(--cas-rychly) ease-out, color var(--cas-rychly) ease-out;
+	}
+
+	.prepinac-jazyka__polozka:hover,
+	.prepinac-jazyka__polozka:focus-visible {
+		opacity: 1;
+		color: var(--lila-stredni);
+		outline: none;
+	}
+
+	.prepinac-jazyka__polozka--aktivni {
+		opacity: 1;
+		font-weight: var(--pismo-vaha-stredni);
+	}
+</style>

@@ -1,0 +1,132 @@
+---
+// ============================================================
+// Paticka.astro — tichá patička webu
+//
+// Zobrazuje:
+//   - jméno značky + ročník (© rok)
+//   - tiché odkazy na SESTERSKÉ weby (čte z src/data/sesterske-weby.ts)
+//
+// Sesterské weby se zobrazí automaticky — patička sama vynechá ten,
+// na kterém právě jsi. Přibude-li další web do manifestu, objeví se tu sám.
+//
+// Vkládá se na konec stránky (před </body>), funguje na světlém pozadí.
+// ============================================================
+
+import { kontakt } from '../data/kontakt';
+import { ostatniWeby } from '../data/sesterske-weby';
+
+const weby = ostatniWeby();
+const rok = new Date().getFullYear();
+---
+
+<footer class="paticka">
+	{weby.length > 0 && (
+		<nav class="paticka__sesterske" aria-label="Sesterské weby">
+			<span class="paticka__nadpis">Sesterské weby</span>
+			<ul class="paticka__seznam">
+				{weby.map((web) => (
+					<li class="paticka__polozka">
+						<a
+							class="paticka__odkaz"
+							href={web.url}
+							rel="noopener"
+						>
+							<span class="paticka__nazev">{web.nazev}</span>
+							<span class="paticka__motto">{web.motto}</span>
+						</a>
+					</li>
+				))}
+			</ul>
+		</nav>
+	)}
+
+	<p class="paticka__copyright">
+		© {rok} {kontakt.znacka}
+	</p>
+</footer>
+
+<style>
+	.paticka {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+		padding: var(--vzduch-velky) var(--vzduch-stredni) var(--vzduch-velky);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--vzduch-velky);
+		background: transparent;
+		color: #000000;
+	}
+
+	.paticka__sesterske {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--vzduch-stredni);
+	}
+
+	.paticka__nadpis {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.8rem;
+		letter-spacing: 0.18em;
+		text-transform: uppercase;
+		opacity: 0.5;
+	}
+
+	.paticka__seznam {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: var(--vzduch-velky);
+	}
+
+	.paticka__odkaz {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--vzduch-mikro);
+		text-decoration: none;
+		color: #000000;
+		transition: color var(--cas-rychly) ease-out, letter-spacing var(--cas-rychly) ease-out;
+	}
+
+	.paticka__nazev {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-stredni);
+		font-size: 1rem;
+		letter-spacing: 0.04em;
+	}
+
+	.paticka__motto {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.85rem;
+		letter-spacing: 0.05em;
+		opacity: 0.6;
+	}
+
+	.paticka__odkaz:hover,
+	.paticka__odkaz:focus-visible {
+		color: var(--lila-stredni);
+		outline: none;
+	}
+
+	.paticka__odkaz:hover .paticka__nazev,
+	.paticka__odkaz:focus-visible .paticka__nazev {
+		letter-spacing: 0.08em;
+	}
+
+	.paticka__copyright {
+		font-family: var(--pismo-zakladni);
+		font-weight: var(--pismo-vaha-svetla);
+		font-size: 0.8rem;
+		letter-spacing: 0.05em;
+		opacity: 0.5;
+		margin: 0;
+	}
+</style>

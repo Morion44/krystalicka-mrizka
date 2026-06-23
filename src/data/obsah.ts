@@ -31,3 +31,20 @@ export const ctyriVetyVrcholu = [
 	'A věz, že zde, je jen další začátek.',
 	'Neboť cesta je cíl.',
 ];
+
+// ============================================================
+// Tři věty stránky 404 (ztracená cesta).
+// Objeví se na tmavé Bráně, postupně jako tři věty úvodu.
+// ★ Každý web si je upraví ve svém duchu. ★
+//   Web 1 (Morion Light) — tišivý, přijímající
+//   Web 2 (Open Your Power) — povzbudivý, vykročení
+//   Web 3 (InterfaceArchitekt) — tvořivý, beze studu
+// ============================================================
+export const triVety404 = [
+	'Tato cesta nikam nevede.',
+	'Stránka, kterou jsi hledal, tu není — nebo už není.',
+	'Vrať se k Bráně a najdi cestu znovu.',
+];
+
+// Text odkazu, který ze 404 vede zpět na úvodní stranu
+export const odkaz404Zpet = 'Zpět k Bráně';

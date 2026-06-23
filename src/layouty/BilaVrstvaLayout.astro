@@ -15,6 +15,7 @@ import Dodekaedr from '../komponenty/Dodekaedr.astro';
 import Menu from '../komponenty/Menu.astro';
 import CookiesLista from '../komponenty/CookiesLista.astro';
 import MetaTagy from '../komponenty/MetaTagy.astro';
+import Paticka from '../komponenty/Paticka.astro';
 
 const { nadpis, popis } = Astro.props;
 ---
@@ -35,6 +36,8 @@ const { nadpis, popis } = Astro.props;
 		<main class="bila-vrstva">
 			<slot />
 		</main>
+
+		<Paticka />
 
 		<Menu />
 		<Dodekaedr />
