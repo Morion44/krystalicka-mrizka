@@ -1,88 +1,68 @@
-# Modul: Booking (rezervační systém)
+# Modul: Booking (rezervace + platba)
 
-Pro klienty, kteří prodávají schůzky *(koučink, terapie, konzultace)*. Cal.com je open-source, GDPR friendly, zdarma.
+Pro weby, které **prodávají čas** (koučink, terapie, konzultace). Klient si vybere termín, způsob kontaktu a rovnou zaplatí — vše v jednom okně. Stojí na **Cal.com** (rezervace, open-source, GDPR friendly) + **Stripe** (platba, napojený přímo v Cal.com) + **Google Calendar** (jeden kalendář pro všechny termíny).
+
+Kompletní návod krok za krokem je v kořenovém **`BOOKING.md`**. Tady je rychlý přehled modulu.
+
+## Co modul obsahuje
+
+| Soubor | Kam zkopírovat | Co dělá |
+|---|---|---|
+| `RezervaceCal.astro` | `src/komponenty/RezervaceCal.astro` | vloží inline rezervační kalendář Cal.com |
+
+Použití v Komnatě:
+
+```astro
+---
+import RezervaceCal from '../komponenty/RezervaceCal.astro';
+---
+<RezervaceCal calLink="blanka/konzultace" />
+```
+
+`calLink` je tvůj odkaz z Cal.com (`uzivatel/slug-eventu`).
+
+## Cesta zákazníka (vše řeší Cal.com + Stripe nativně)
+
+1. Klikne na CTA → objeví se rezervační kalendář *(komponenta výše)*
+2. Vybere **datum a čas** → Cal.com
+3. Vybere **způsob kontaktu** (telefon / Google Meet) → „Location" u eventu
+4. U Google Meet se **termín i odkaz** vytvoří přes propojený Google Calendar
+5. Vyplní **kontaktní údaje** → rezervační formulář Cal.com
+6. Je naveden na **platební bránu** → Stripe (event je označený jako placený)
+7. **Zaplatí** → Stripe potvrdí rezervaci
+8. Dostane **mail s potvrzením** termínu, způsobu kontaktu a **dokladem o platbě** → Cal.com + Stripe
+9. **Ty dostaneš oznámení** o blokaci termínu, kontaktu i platbě → Cal.com + Stripe
+
+## Klíč: jeden kalendář, žádné kolize
+
+OYP rezervace se v kalendáři **potkávají s termíny, které domluvíš ručně** (např. z Morion Light). Řešení = **jeden Google Calendar jako jediný zdroj pravdy**:
+
+- Cal.com **čte** zaneprázdněné časy z Google Calendar → automaticky **nenabídne** obsazené sloty (i ty, co sis zapsala ručně). To je „conflict checking".
+- Cal.com **zapisuje** OYP rezervace zpět do Google Calendar.
+- Ty dál ručně zapisuješ Morion termíny do téhož kalendáře → Cal je respektuje.
+
+Výsledek: nikdy se dva termíny nepřekryjí, ať přišly odkudkoli. Detailní nastavení v `BOOKING.md`.
 
 ## Cal.com vs Calendly
 
 | | Cal.com | Calendly |
 |---|---|---|
-| Cena | zdarma | zdarma s omezeními |
+| Cena | zdarma (placené rezervace přes Stripe v plánu zdarma) | zdarma s omezeními |
 | Open source | ano | ne |
-| Self-host | ano (volitelně) | ne |
-| GDPR | excellent | dobrý |
-| UI | čisté | čisté |
-| Embed | iframe nebo widget | iframe |
+| GDPR | excelentní | dobrý |
+| Platby (Stripe) | ano, nativně | ano (vyšší plán) |
+| Embed | iframe / inline widget | iframe |
 
-**Doporučuji Cal.com** pro Morion Light typ klientů.
+**Doporučení: Cal.com.**
 
-## Setup Cal.com
+## CSP (Cloudflare Transform Rules → Content-Security-Policy)
 
-### Krok 1: Účet
-1. https://cal.com → Sign up *(přes Google nebo e-mail)*
-2. Vytvořit „Event Type" *(např. „Individuální konzultace 60 minut")*
-3. Nastavit dostupné časy
-4. Propojit Google Calendar / iCal *(volitelně)*
-
-### Krok 2: Embed v Astru
-
-V Komnatě:
-```astro
-<div id="cal-embed"></div>
-
-<script>
-  (function (C, A, L) {
-    let p = function (a, ar) { a.q.push(ar); };
-    let d = C.document;
-    C.Cal = C.Cal || function () {
-      let cal = C.Cal;
-      let ar = arguments;
-      if (!cal.loaded) {
-        cal.ns = {};
-        cal.q = cal.q || [];
-        d.head.appendChild(d.createElement('script')).src = A;
-        cal.loaded = true;
-      }
-      if (ar[0] === L) {
-        const api = function () { p(api, arguments); };
-        const namespace = ar[1];
-        api.q = api.q || [];
-        typeof namespace === 'string'
-          ? (cal.ns[namespace] = api) && p(api, ar)
-          : p(cal, ar);
-        return;
-      }
-      p(cal, ar);
-    };
-  })(window, 'https://app.cal.com/embed/embed.js', 'init');
-
-  Cal('init', { origin: 'https://cal.com' });
-
-  Cal('inline', {
-    elementOrSelector: '#cal-embed',
-    calLink: 'tva-cal-link/individualni-konzultace'
-  });
-</script>
-```
-
-`tva-cal-link` je tvoje uživatelské jméno na Cal.com, `individualni-konzultace` je slug eventu.
-
-### Krok 3: CSP aktualizace
-
-V Cloudflare Transform Rules → Content-Security-Policy přidej:
 ```
 script-src 'self' 'unsafe-inline' https://app.cal.com;
 frame-src https://app.cal.com https://cal.com;
 connect-src 'self' https://app.cal.com;
 ```
 
-### Krok 4: Test
-
-Otevři Komnatu s embed → ověř, že kalendář se načítá. Zarezervuj test schůzku → ověř, že přišla notifikace + mail.
-
-## Alternativa: Calendly (pokud klient preferuje)
-
-Setup podobný, jen embed kód z calendly.com.
-
 ## Filozofie
 
-Booking je užitečný pro klienty, kteří **prodávají čas**. Pro klienty, kteří preferují kontaktní formulář *(„napište mi, domluvíme se osobně")*, je booking zbytečný.
+Booking je pro weby, které prodávají čas. Pro klienty „napište mi, domluvíme se" stačí kontaktní formulář. Pro prodej **produktů/kurzů** (ne schůzek) použij samostatný modul `platby` (Stripe Checkout) — viz `BOOKING.md`, sekce „Kdy booking a kdy platby".

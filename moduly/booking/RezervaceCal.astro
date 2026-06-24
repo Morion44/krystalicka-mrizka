@@ -1,0 +1,86 @@
+---
+// ============================================================
+// RezervaceCal.astro — vložený rezervační kalendář (Cal.com)
+//
+// Znovupoužitelná komponenta. Vloží inline kalendář Cal.com,
+// kde si klient vybere termín, způsob kontaktu (telefon / Google
+// Meet) a — je-li event placený — rovnou zaplatí přes Stripe.
+//
+// Veškerá logika (placený event, platba, Google Meet, potvrzovací
+// maily, blokace termínu) se nastavuje v Cal.com — viz BOOKING.md.
+// Tato komponenta jen zobrazuje kalendář.
+//
+// Po zkopírování modulu umísti do: src/komponenty/RezervaceCal.astro
+//
+// Použití v Komnatě:
+//   <RezervaceCal calLink="blanka/konzultace" />
+// ============================================================
+
+interface Props {
+	calLink: string;        // tvůj odkaz na Cal.com, např. "blanka/konzultace"
+	vyska?: string;         // výška kalendáře (CSS hodnota)
+}
+
+const { calLink, vyska = '680px' } = Astro.props;
+---
+
+<div class="rezervace" data-cal-link={calLink} style={`min-height:${vyska}`}>
+	<div class="rezervace__kalendar" id="rezervace-kalendar"></div>
+</div>
+
+<script is:inline>
+	(function (C, A, L) {
+		let p = function (a, ar) { a.q.push(ar); };
+		let d = C.document;
+		C.Cal = C.Cal || function () {
+			let cal = C.Cal;
+			let ar = arguments;
+			if (!cal.loaded) {
+				cal.ns = {};
+				cal.q = cal.q || [];
+				d.head.appendChild(d.createElement('script')).src = A;
+				cal.loaded = true;
+			}
+			if (ar[0] === L) {
+				const api = function () { p(api, arguments); };
+				const namespace = ar[1];
+				api.q = api.q || [];
+				typeof namespace === 'string'
+					? (cal.ns[namespace] = api) && p(api, ar)
+					: p(cal, ar);
+				return;
+			}
+			p(cal, ar);
+		};
+	})(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+	Cal('init', { origin: 'https://cal.com' });
+
+	const obal = document.querySelector('.rezervace');
+	const odkaz = obal ? obal.getAttribute('data-cal-link') : '';
+
+	Cal('inline', {
+		elementOrSelector: '#rezervace-kalendar',
+		calLink: odkaz,
+		config: { layout: 'month_view' },
+	});
+
+	Cal('ui', { hideEventTypeDetails: false, layout: 'month_view' });
+</script>
+
+<style>
+	.rezervace {
+		width: 100%;
+		max-width: 1000px;
+		margin: 0 auto;
+		border-radius: 12px;
+		overflow: hidden;
+	}
+
+	.rezervace__kalendar {
+		width: 100%;
+		height: 100%;
+		min-height: inherit;
+		overflow: auto;
+	}
+</style>

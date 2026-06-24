@@ -52,7 +52,7 @@ Stripe Checkout — jednorázové platby. Pro: kouči, terapeuti, kurzy.
 Snipcart — košík + Stripe pro statické weby. Pro: malé e-shopy (do 50 produktů).
 
 ### 📅 booking
-Cal.com nebo Calendly embed. Pro: weby s objednávkovým systémem (terapie, koučink).
+Cal.com embed + Stripe (platba přímo v rezervaci) + Google Calendar (jeden kalendář, žádné kolize). Komponenta `RezervaceCal.astro`, návod v kořenovém `BOOKING.md`. Pro: weby prodávající čas (terapie, koučink, konzultace).
 
 ### 📊 analytics
 Plausible nebo Cloudflare Web Analytics. Bez cookies. Pro: weby, kde chceš měřit návštěvnost bez tracking skriptů.
